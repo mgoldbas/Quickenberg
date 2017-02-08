@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block body %}
+    <form method="POST">
+    {% if message %}
+    <p>{{ message }}</p>
+        <br>
+    {% endif %}
+     {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+    </form>
+{% endblock %}

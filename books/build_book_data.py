@@ -10,8 +10,8 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 import requests
 import re
 from bs4 import BeautifulSoup
-
-
+from io import StringIO
+from django.conf import settings
 
 def get_book_text(text):
     """
@@ -60,6 +60,7 @@ def break_text_into_chunks(regex, text):
 
 
 
+
 class ScrapeGutenberg:
     """
     Comprehensive object for finding all required information from Project Gutenberg pages
@@ -68,8 +69,8 @@ class ScrapeGutenberg:
     _url = "https://www.gutenberg.org/ebooks/{}"
 
     def __init__(self, id):
+        self.id = id
         self.url = self._url.format(id)
-
         self.soup()
         self.get_info()
         pass
@@ -87,29 +88,52 @@ class ScrapeGutenberg:
         """
         self.get_txt_link()
         self.get_title_and_author()
+        self.get_files()
 
     def get_txt_link(self):
         """
         get the text link
         :return:
         """
+        self.text_link = None
         for s in self.soup.find_all('a', href=True):
             link = s['href']
-            if link.endswith('.txt'):
+            if link.endswith('.txt') or link.endswith('.txt.utf-8'):
                 self.text_link = link
+                self.text_link = 'http:' + self.text_link
+        if self.text_link == None:
+            print(self.soup.contents)
 
     def get_title_and_author(self):
-        contents = self.soup.find_all('h1')#[0].contents[0]
-        print(contents)
+        try:
+            contents = self.soup.find_all('title')[0].text
+        except IndexError:
+            self.author = "No Author Found"
+            self.title = "No Title Found"
+            return None, None
         by = contents.find('by')
-        title = contents[by:]
-        print(title)
-        author = contents[:by+2]
-        print(author)
+        title = contents[:by - 1]
+        author = contents[by+2:]
+        self.title = title
+        self.author = author
+        return title, author
 
+    def get_files(self):
+        """
+        get book text and store it as a file-like object
+        :return:
+        """
 
+        request = requests.get(self.text_link)
+        self.book_io = StringIO(request.text)
+        self.html_io = StringIO(self.soup.text)
+
+    def return_book_info(self):
+        return {'html_id':self.id, 'url':self.url, 'title':self.title, 'html_file':self.html_io.read()
+            , 'author':self.author}
 
 if __name__ == "__main__":
-    ScrapeGutenberg(5776)
+    s = ScrapeGutenberg(6312)
+    print(s.return_book_info())
 
 

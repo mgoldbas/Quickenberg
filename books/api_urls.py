@@ -6,14 +6,14 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 
 
 # Manage Resources
-from books.views import BookList, BookDetail
+from books.views import APIBookList, APIBookDetail
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.conf.urls import url
 
 
 urlpatterns = [
-    url(r'^$', BookList.as_view()),
-    url(r'^(?P<pk>[0-9]+)/$', BookDetail.as_view()),
+    url(r'^$', APIBookList.as_view()),
+    url(r'^(?P<pk>[0-9]+)/$', APIBookDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

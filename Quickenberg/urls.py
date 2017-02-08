@@ -22,7 +22,8 @@ from Quickenberg import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('books.api_urls')),
-    url(r'^$', include('books.urls'))
+    url(r'^', include('books.urls'))
+
 ]
 
 # import static files

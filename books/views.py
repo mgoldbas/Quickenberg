@@ -2,7 +2,7 @@
 from books.build_book_data import ScrapeGutenberg
 from books.models import Book, BookFile, Author
 from books.serializers import BookSerializer, AuthorSerializer
-from books.forms import IDForm
+from books.forms import IDForm, TextForm
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect
 from django.views import View
@@ -54,7 +54,7 @@ class APIBookDetail(APIView):
 
 
 
-class AuthorList(APIView):
+class APIAuthorList(APIView):
     """
     Get and list all Authors, store Authors in db
     """
@@ -72,7 +72,7 @@ class AuthorList(APIView):
 
 
 def index(request):
-    ctx = {}
+    ctx = {'title':"Home"}
     return render(request, 'index.html', ctx)
 
 
@@ -83,20 +83,59 @@ class IDView(View):
 
     form_class = IDForm
     template_name = 'id_form.html'
+    context = {'form':form_class, 'title':'Enter ID'}
     def get(self, request):
-        return render(request, self.template_name, {'form':self.form_class})
+        return render(request, self.template_name, self.context)
 
     def post(self, request):
+        cxt = self.context.copy()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            html_id = form['html_id']
+            scrape = ScrapeGutenberg(html_id.value())
+            data = scrape.return_book_info()
+            book = Book(**data)
+            #a = Author(author=data['author'], book=b) #add author functionality later
+            book.save()
+            if scrape.title:
+                cxt['message'] = 'Successfully Entered ' + scrape.title
+            else:
+                cxt['message'] = 'Successfully Entered book, however no title was found'
+            if scrape.author != 'No Author Found':
+                a = Author(author=scrape.author)
+                a.save()
+            return render(request, self.template_name, cxt)
+        cxt['message'] = 'Failed to insert book'
+        return render(request, self.template_name, cxt)
+
+class EnterTextView(View):
+    """
+    view for creating books from ID number
+    """
+
+    form_class = TextForm
+    template_name = 'id_form.html'
+    context = {'form':form_class, 'title':'Enter ID'}
+    def get(self, request):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request):
+        cxt = self.context.copy()
         form = self.form_class(request.POST)
         if form.is_valid():
             html_id = form['html_id']
             scrape = ScrapeGutenberg(html_id.value())
             data = scrape.return_book_info()
             b = Book(**data)
-            a = Author(author=data['author'], book=b)
+            #a = Author(author=data['author'], book=b) #add author functionality later
             b.save()
-            return render(request, self.template_name, {'form':self.form_class, 'message':'success'})
-        return render(request, self.template_name, {'form':self.form_class, 'message':'failed'})
+            if scrape.title:
+                cxt['message'] = 'Successfully Entered ', scrape.title
+            else:
+                cxt['message'] = 'Successfully Entered book, however no title was found'
+            return render(request, self.template_name, cxt)
+        cxt['message'] = 'Failed to insert book'
+        return render(request, self.template_name, cxt)
 
 
 class BookListView(View):
@@ -104,10 +143,13 @@ class BookListView(View):
     List books
     """
     template_name = 'list.html'
+    context = {'title':'Available Books', 'toggle_menu':True}
     def get(self, request):
         books = Book.objects.all()
-        return render(request, self.template_name, {'books':books})
+        cxt = self.context.copy()
+        cxt['books'] = books
+        return render(request, self.template_name, cxt)
 
-    
+
 
 

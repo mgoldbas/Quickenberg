@@ -12,8 +12,8 @@ from django.conf.urls import url
 
 
 urlpatterns = [
-    url(r'^$', APIBookList.as_view()),
-    url(r'^(?P<pk>[0-9]+)/$', APIBookDetail.as_view()),
+    url(r'^$', APIBookList.as_view(), name='book_list'),
+    url(r'^(?P<pk>[0-9]+)/$', APIBookDetail.as_view(), name='book_detail'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -7,11 +7,17 @@ import bs4
 
 
 class Book(models.Model):
+    """
+    Main class for storing text data
+    """
+    #TODO seperate between
     html_id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=200, null=True)
     url = models.URLField(default='http://www.gutenberg.org/cache/epub/1232/pg1232.txt') #the prince is the default
     regex_seperator = models.CharField(max_length=100, null=True)
     html_file = models.FileField()
+
+
     def __str__(self):
         return self.title
 

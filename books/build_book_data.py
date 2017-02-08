@@ -60,26 +60,13 @@ def break_text_into_chunks(regex, text):
 
 
 
-
-class ScrapeGutenberg:
+class GetTextInfo(object):
     """
-    Comprehensive object for finding all required information from Project Gutenberg pages
+    Object for parsing html files from project gutenberg on
+
     """
 
-    _url = "https://www.gutenberg.org/ebooks/{}"
-
-    def __init__(self, id):
-        self.id = id
-        self.url = self._url.format(id)
-        self.soup()
-        self.get_info()
-        pass
-
-
-    def soup(self):
-        self.request = requests.get(self.url)
-        self.soup = BeautifulSoup(self.request.content, 'html.parser')
-
+    soup = None
 
     def get_info(self):
         """
@@ -101,10 +88,12 @@ class ScrapeGutenberg:
             if link.endswith('.txt') or link.endswith('.txt.utf-8'):
                 self.text_link = link
                 self.text_link = 'http:' + self.text_link
-        if self.text_link == None:
-            print(self.soup.contents)
 
     def get_title_and_author(self):
+        """
+        Go to the html title and get the book title and author
+        :return:
+        """
         try:
             contents = self.soup.find_all('title')[0].text
         except IndexError:
@@ -112,7 +101,7 @@ class ScrapeGutenberg:
             self.title = "No Title Found"
             return None, None
         by = contents.find('by')
-        title = contents[:by - 1]
+        title = contents[:by - 1] #TODO Charlotte Perkins Gilman - Free Ebook, remove "free ebook" from the end
         author = contents[by+2:]
         self.title = title
         self.author = author
@@ -128,12 +117,43 @@ class ScrapeGutenberg:
         self.book_io = StringIO(request.text)
         self.html_io = StringIO(self.soup.text)
 
-    def return_book_info(self):
-        return {'html_id':self.id, 'url':self.url, 'title':self.title, 'html_file':self.html_io.read()
-            , 'author':self.author}
 
-if __name__ == "__main__":
-    s = ScrapeGutenberg(6312)
-    print(s.return_book_info())
+class ScrapeGutenberg(GetTextInfo):
+    """
+    Comprehensive object for finding all required information from Project Gutenberg pages
+    """
+
+    _url = "https://www.gutenberg.org/ebooks/{}"
+
+    def __init__(self, id):
+        self.id = id
+        self.url = self._url.format(id)
+        self.soup()
+        self.get_info()
+        pass
+
+
+    def get_soup(self):
+        self.request = requests.get(self.url)
+        self.soup = BeautifulSoup(self.request.content, 'html.parser')
+        #TODO there may be a conflict with soup method and soup object
+
+    def return_book_info(self):
+        return {'html_id':self.id, 'url':self.url, 'title':self.title, 'html_file':self.html_io.read() }
+
+    def return_author(self):
+        return self.author
+
+
+class ScrapeHTML(GetTextInfo):
+    """
+    use utilities on html file rather than web link
+    """
+    def __init__(self, html_text):
+        self.html_text = html_text
+
+    def get_soup(self):
+        self.soup = BeautifulSoup(self.html_text, 'html.parser')
+
 
 

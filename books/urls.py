@@ -6,13 +6,15 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 
 
 # Manage Resources
-from books.views import index, IDView, BookListView
+from books.views import index, IDView, BookListView, EnterTextView
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.conf.urls import url
 
 
 urlpatterns = [
-    url(r'^id/$', IDView.as_view(), name='home'),
+    url(r'^$', index, name='index'),
+    url(r'^id/$', IDView.as_view(), name='add_id'),
+    url(r'^text/$', EnterTextView.as_view(), name='add_text'),
     url(r'^books/$', BookListView.as_view(), name='books'),
 ]
 

@@ -11,7 +11,8 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from io import StringIO
-from django.conf import settings
+import re
+from collections import OrderedDict
 
 def get_book_text(text):
     """
@@ -151,9 +152,70 @@ class ScrapeHTML(GetTextInfo):
     """
     def __init__(self, html_text):
         self.html_text = html_text
+        self.get_info()
 
     def get_soup(self):
         self.soup = BeautifulSoup(self.html_text, 'html.parser')
+
+
+def split_by_regex(regex, text):
+    """
+    split apart text into chapters by regex,
+    :param regex:
+    :param text:
+    :return: OrderedDict of chapter:text pairs
+    """
+    matches = re.search(regex, text, re.I)
+    return matches
+
+class SplitByRegex(object):
+    """
+    divide up text by regular expression
+    """
+
+    def __init__(self, regex, text):
+        self.regex = re.compile(regex)
+        self.text = text
+        self.chapters = OrderedDict()
+        self.create_chapters()
+        pass
+
+
+
+    def split_up(self):
+        match = self.regex.search(self.text)
+        if match == None:
+            return None
+        end = match.span()[1]
+        if self.chapters == OrderedDict():
+            self.chapters['Header'] = self.text[:match.span()[0]]
+        else:
+            chapter_name = match.group(0).strip() + ' ' #requires space in the end to resolve chapter name disputes
+            print(chapter_name)
+            if chapter_name in self.chapters.keys():
+                duplicates = [k for k in self.chapters.keys() if k.startswith(chapter_name)]
+                print(duplicates)
+                self.chapters[chapter_name + ' - ' + str(len(duplicates))] = self.text[:match.span()[0]]
+            else:
+                self.chapters[chapter_name] = self.text[:matches.span()[0]] #TODO check to see if chapter already exists
+        self.text = self.text[end:]
+        return True
+
+    def create_chapters(self):
+        while True:
+            if self.split_up() == None:
+                break
+        return self.chapters
+
+if __name__ == "__main__":
+    with open('testing_text.txt', 'r') as f:
+        text = f.read()
+    uppercase = r'\n[A-Z]+\n'
+    matches = split_by_regex(uppercase, text)
+    s = SplitByRegex(uppercase, text)
+    pass
+
+
 
 
 

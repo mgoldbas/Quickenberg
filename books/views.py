@@ -95,8 +95,11 @@ class IDView(View):
             scrape = ScrapeGutenberg(html_id.value())
             data = scrape.return_book_info()
             book = Book(**data)
-            #a = Author(author=data['author'], book=b) #add author functionality later
+
             book.save()
+            #TODO add author functionality later
+            #a = Author(author=data['author'], book=b)
+
             if scrape.title:
                 cxt['message'] = 'Successfully Entered ' + scrape.title
             else:

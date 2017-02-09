@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import admin
 import bs4
+from books.build_book_data import SplitByRegex
 
 # Create your models here.
 
@@ -43,12 +44,22 @@ class Author(models.Model):
 
 
 class BookFile(models.Model):
-    book_title = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.OneToOneField(Book, on_delete=models.CASCADE)
     file = models.FileField()
 
+    def make_chapters(self, regex):
+        """
+        chop up book in to chapters
+        :return:
+        """
+        split = SplitByRegex(regex, self.file.read())
+        for k, v in split.chapters.items():
+            book_chapter = BookChapter(chapter=k, book=self, text=v)
+            book_chapter.save()
+
 class BookChapter(models.Model):
-    chapter = models.IntegerField()
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    chapter = models.CharField(max_length=200)
+    book = models.ForeignKey(BookFile, on_delete=models.CASCADE)
     text = models.TextField()
 
 

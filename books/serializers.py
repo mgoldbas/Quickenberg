@@ -7,6 +7,8 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 from books.models import Book, Author #, BookFile
 from rest_framework import serializers
 
+
+"""
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
@@ -18,3 +20,4 @@ class AuthorSerializer(serializers.ModelSerializer):
         model = Author
         fields = ('author', )
 
+"""

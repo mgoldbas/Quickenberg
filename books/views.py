@@ -1,7 +1,7 @@
 
 from books.build_book_data import ScrapeGutenberg
-from books.models import Book, BookFile, Author
-from books.serializers import BookSerializer, AuthorSerializer
+from books.models import Author, Text
+#from books.serializers import BookSerializer, AuthorSerializer
 from books.forms import IDForm, TextForm
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect
@@ -12,12 +12,9 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-
+"""
 # Create your views here.
 class APIBookList(APIView):
-    """
-    Get and list all books, store books in db
-    """
     def get(self, request, format=None):
         books = Book.objects.all()
         serializer = BookSerializer(books, many=True)
@@ -32,9 +29,7 @@ class APIBookList(APIView):
 
 
 class APIBookDetail(APIView):
-    """
-    Get Book and list available chapters
-    """
+
     def get_book(self, pk):
         try:
             book = Book.objects.get(pk=pk)
@@ -53,11 +48,8 @@ class APIBookDetail(APIView):
 
 
 
-
 class APIAuthorList(APIView):
-    """
-    Get and list all Authors, store Authors in db
-    """
+
     def get(self, request, format=None):
         authors = Author.objects.all()
         serializer = AuthorSerializer(authors, many=True)
@@ -69,6 +61,7 @@ class APIAuthorList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+"""
 
 
 def index(request):
@@ -94,7 +87,7 @@ class IDView(View):
             html_id = form['html_id']
             scrape = ScrapeGutenberg(html_id.value())
             data = scrape.return_book_info()
-            book = Book(**data)
+            book = Text(**data)
 
             book.save()
             #TODO add author functionality later
@@ -129,7 +122,7 @@ class EnterTextView(View):
             html_id = form['html_id']
             scrape = ScrapeGutenberg(html_id.value())
             data = scrape.return_book_info()
-            b = Book(**data)
+            b = Text(**data)
             #a = Author(author=data['author'], book=b) #add author functionality later
             b.save()
             if scrape.title:
@@ -148,7 +141,7 @@ class BookListView(View):
     template_name = 'list.html'
     context = {'title':'Available Books', 'toggle_menu':True}
     def get(self, request):
-        books = Book.objects.all()
+        books = Text.objects.all()
         cxt = self.context.copy()
         cxt['books'] = books
         return render(request, self.template_name, cxt)

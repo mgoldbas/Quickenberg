@@ -7,7 +7,7 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 
 # Manage Resources
 from django import forms
-from books.models import Book
+from books.models import Text
 
 
 
@@ -18,6 +18,6 @@ class IDForm(forms.Form):
 
 class TextForm(forms.ModelForm):
     class Meta:
-        model = Book
+        model = Text
         exclude = ()
 

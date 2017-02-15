@@ -7,15 +7,61 @@ from books.build_book_data import SplitByRegex
 
 
 
-class Book(models.Model):
+
+class Author(models.Model):
     """
-    Main class for storing text data
+    Model for storing Authors associated with Texts
+    """
+    name = models.CharField(primary_key=True, max_length=300)
+    def __unicode__(self):
+        self.author
+
+    class Meta:
+        ordering = ('name',)
+
+
+class Text(models.Model):
+    is_broken_up = models.BooleanField(default=False)
+    regex = models.CharField(max_length=200, null=True)
+    title = models.CharField(max_length=200, null=False)
+    author = models.ManyToManyField(Author, null=True)
+
+
+    def break_up(self):
+        """
+        use this function to break up text
+        must have a regex value
+        :return:
+        """
+        if self.regex == None:
+            raise ValueError
+        self.is_broken_up = True
+
+class FileText(Text):
+    """
+    a class for storing text by file
+    """
+    words = models.FileField()
+
+
+
+class InputText(Text):
+    """
+    a class for storing text by input
+    """
+    words = models.TextField()
+
+
+
+
+class Gutenberg(Text):
+    """
+    Model for storing html file from project gutenberg website
     """
     #TODO seperate between
+    parent_text = models.OneToOneField(FileText)
     html_id = models.IntegerField(primary_key=True)
-    title = models.CharField(max_length=200, null=True)
     url = models.URLField(default='http://www.gutenberg.org/cache/epub/1232/pg1232.txt') #the prince is the default
-    regex_seperator = models.CharField(max_length=100, null=True)
     html_file = models.FileField()
 
 
@@ -31,37 +77,30 @@ class Book(models.Model):
 
 
 
-class Author(models.Model):
-    author = models.CharField(primary_key=True, max_length=300)
-    books = models.ManyToManyField('Book')
 
-    def __str__(self):
-        self.author
+class Chapter(models.Model):
+    """
+    Parent model for chapters
+    """
+    number = models.DecimalField(decimal_places=1, max_digits=3)
+    chapter = models.TextField()
 
     class Meta:
-        ordering = ('author',)
+        ordering = ('number',)
+
+class InputChapter(Chapter):
+    """
+    a model for storing chapters from input text model
+    """
+    source = models.ForeignKey(InputText)
+
+class FileChapter(Chapter):
+    """
+    a model for storing chapters from file text model
+    """
+    source = models.ForeignKey(FileText)
 
 
 
-class BookFile(models.Model):
-    book = models.OneToOneField(Book, on_delete=models.CASCADE)
-    file = models.FileField()
-
-    def make_chapters(self, regex):
-        """
-        chop up book in to chapters
-        :return:
-        """
-        split = SplitByRegex(regex, self.file.read())
-        for k, v in split.chapters.items():
-            book_chapter = BookChapter(chapter=k, book=self, text=v)
-            book_chapter.save()
-
-class BookChapter(models.Model):
-    chapter = models.CharField(max_length=200)
-    book = models.ForeignKey(BookFile, on_delete=models.CASCADE)
-    text = models.TextField()
-
-
-admin.site.register([Book, Author, BookFile, BookChapter])
+#admin.site.register([Text, Author, BookFile, BookChapter])
 

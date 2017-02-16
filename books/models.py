@@ -13,8 +13,9 @@ class Author(models.Model):
     Model for storing Authors associated with Texts
     """
     name = models.CharField(primary_key=True, max_length=300)
-    def __unicode__(self):
-        self.author
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ('name',)
@@ -42,6 +43,7 @@ class FileText(Text):
     a class for storing text by file
     """
     words = models.FileField()
+    is_gutenberg = models.BooleanField()
 
 
 
@@ -101,6 +103,15 @@ class FileChapter(Chapter):
     source = models.ForeignKey(FileText)
 
 
+class Genre(models.Model):
+    """
+    Genre for models
+    """
+    fiction = models.BooleanField()
+    genre = models.CharField(max_length=100)
+    text = models.ManyToManyField(Text, null=True)
 
-#admin.site.register([Text, Author, BookFile, BookChapter])
+
+
+admin.site.register([Text, Author, InputText, FileText, Genre])
 

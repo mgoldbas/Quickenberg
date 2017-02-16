@@ -7,17 +7,41 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 
 # Manage Resources
 from django import forms
-from books.models import Text
+from books.models import InputText, FileText, Author
 
 
 
 # Classes
-
 class IDForm(forms.Form):
+    """
+    Form that will scrape data from project gutenberg site
+    """
     html_id = forms.IntegerField()
 
-class TextForm(forms.ModelForm):
-    class Meta:
-        model = Text
-        exclude = ()
 
+
+class InputTextForm(forms.ModelForm):
+    """
+    form for creating text by input
+    """
+    class Meta:
+        model = InputText
+        exclude = ('is_broken_up','regex',)
+
+
+class FileTextForm(forms.ModelForm):
+    """
+    form for creating text by file
+    """
+    class Meta:
+        model = FileText
+        exclude = ('is_broken_up','regex',)
+
+
+class AuthorForm(forms.ModelForm):
+    """
+    form for creating Authors
+    """
+    class Meta:
+        model = Author
+        exclude = ()

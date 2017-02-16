@@ -35,7 +35,7 @@ class FileTextForm(forms.ModelForm):
     """
     class Meta:
         model = FileText
-        exclude = ('is_broken_up','regex',)
+        exclude = ('is_broken_up','regex','is_gutenberg')
 
 
 class AuthorForm(forms.ModelForm):

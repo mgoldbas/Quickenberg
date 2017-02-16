@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.views import View
 from django.views.generic import FormView, ListView, DetailView
 from django.http import HttpResponse
+from itertools import chain
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -122,13 +123,19 @@ class EnterFileTextView(FormView):
     template_name = 'id_form.html'
     success_url = '/books/'
 
-class EnterAuthorView(FormView):
+class EnterAuthorView(FormView, ListView):
     """
     view for entering author
     """
     form_class = AuthorForm
-    template_name = 'id_form.html'
-    success_url = '/books/'
+    template_name = 'author.html'
+    success_url = '/author/'
+    queryset = Author.objects.all()
+    context_object_name = 'authors'
+
+    def form_valid(self, form):
+        form.save()
+        return super(EnterAuthorView, self).form_valid(form)
 
 class TextListView(ListView):
     """
@@ -137,8 +144,15 @@ class TextListView(ListView):
     model = Text
     template_name = 'list.html'
     context = {'title':'Available Books', 'toggle_menu':True}
-    queryset = Text.objects.all() #may require custom model manager
+    queryset = list(chain(InputText.objects.all(), FileText.objects.all())) #may require custom model manager
+    context_object_name = 'books'
 
+    def get(self, request, *args, **kwargs):
+        request = super(TextListView, self).get(request, *args, **kwargs)
+        print(dir(request))
+        print(request.context_data)
+        request.context_data['books'] = list(chain(InputText.objects.all(), FileText.objects.all()))
+        return request
 class InputTextDetailView(DetailView):
     model = InputText
 

@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+{% block body %}
+    {% block body_form %}
+    <form method="POST">
+        <table>
+
+            {% if message %}
+             <tl>{{ message }}</tl><br>
+            {% endif %}
+            {% csrf_token %}
+
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+    {% endblock %}
+
+    {% block body_list %}
+    <ul>
+        {% for item in list %}
+
+        <li>{{ item }}</li>
+
+        {% endfor %}
+    </ul>
+    {% endblock %}
+{% endblock %}

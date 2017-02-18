@@ -118,8 +118,11 @@ class GetTextInfo(object):
         """
 
         request = requests.get(self.text_link)
-        self.book_io = StringIO(request.text).read()
-        self.html_io = StringIO(self.soup.text).read()
+        self.book_io = StringIO(request.text)
+        self.html_io = StringIO(self.soup.text)
+        self.book_text = self.book_io.read()
+
+
 
 
 class ScrapeGutenberg(GetTextInfo):
@@ -146,7 +149,8 @@ class ScrapeGutenberg(GetTextInfo):
         return {'html_id':self.id, 'url':self.url, 'html_file':self.html_io}
 
     def make_book(self):
-        return {'is_broken_up':False, 'title':self.title, 'words':self.html_io, 'is_gutenberg':True}
+        return {'is_broken_up':False, 'title':self.title, 'words':self.book_io, 'is_gutenberg':True
+            , 'author':self.author}
 
     def return_author(self):
         return self.author
@@ -214,13 +218,8 @@ class SplitByRegex(object):
         return self.chapters
 
 if __name__ == "__main__":
-    with open('testing_text.txt', 'r') as f:
-        text = f.read()
-    uppercase = r'\n[A-Z]+\n'
-    matches = split_by_regex(uppercase, text)
-    s = SplitByRegex(uppercase, text)
-    pass
-
+    scrape = ScrapeGutenberg(54177)
+    print(scrape.html_io)
 
 
 

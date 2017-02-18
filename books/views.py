@@ -85,15 +85,23 @@ class EnterIDView(FormView):
         return context
 
     def post(self, request, *args, **kwargs):
+        """
+        Use the request and scrape objects to create a new Author if that Author does not exist already,
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         form = self.get_form()
         if form.is_valid():
             html_id = form['html_id']
-            print(html_id)
             scrape = ScrapeGutenberg(html_id.value())
             author, title = scrape.get_title_and_author()
             author_form = AuthorForm(data={'name':author})
             if author_form.is_valid():
                 author_form.save()
+            else:
+                messages.error(request, 'Author was not found')
             file_text_form = FileTextForm(data=scrape.make_book())
             if file_text_form.is_valid():
                 file_text_form.save()

@@ -25,7 +25,7 @@ class Text(models.Model):
     is_broken_up = models.BooleanField(default=False)
     regex = models.CharField(max_length=200, null=True, blank=True)
     title = models.CharField(max_length=200, null=False)
-    author = models.ManyToManyField(Author, null=True)
+    author = models.ManyToManyField(Author, null=True, blank=True)
 
 
     def break_up(self):

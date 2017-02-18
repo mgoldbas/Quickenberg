@@ -7,7 +7,7 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 
 # Manage Resources
 from django import forms
-from books.models import InputText, FileText, Author
+from books.models import InputText, FileText, Author, Genre, Gutenberg
 
 
 
@@ -45,3 +45,21 @@ class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
         exclude = ()
+
+
+class GenreForm(forms.ModelForm):
+    """
+    form for creating Genres
+    """
+    class Meta:
+        model = Genre
+        exclude = ('text',)
+
+class GutenbergForm(forms.ModelForm):
+    """
+    form for creating Gutenberg objects
+    """
+    class Meta:
+        model = Gutenberg
+        exclude = ()
+

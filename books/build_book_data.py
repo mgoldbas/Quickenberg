@@ -104,6 +104,9 @@ class GetTextInfo(object):
         by = contents.find('by')
         title = contents[:by - 1] #TODO Charlotte Perkins Gilman - Free Ebook, remove "free ebook" from the end
         author = contents[by+2:]
+        dash = author.find('-')
+        if dash > 0:
+            author = author[:dash]
         self.title = title
         self.author = author
         return title, author
@@ -115,8 +118,8 @@ class GetTextInfo(object):
         """
 
         request = requests.get(self.text_link)
-        self.book_io = StringIO(request.text)
-        self.html_io = StringIO(self.soup.text)
+        self.book_io = StringIO(request.text).read()
+        self.html_io = StringIO(self.soup.text).read()
 
 
 class ScrapeGutenberg(GetTextInfo):
@@ -129,7 +132,7 @@ class ScrapeGutenberg(GetTextInfo):
     def __init__(self, id):
         self.id = id
         self.url = self._url.format(id)
-        self.soup()
+        self.get_soup()
         self.get_info()
         pass
 
@@ -139,8 +142,11 @@ class ScrapeGutenberg(GetTextInfo):
         self.soup = BeautifulSoup(self.request.content, 'html.parser')
         #TODO there may be a conflict with soup method and soup object
 
-    def return_book_info(self):
-        return {'html_id':self.id, 'url':self.url, 'title':self.title, 'html_file':self.html_io.read() }
+    def make_gutenberg(self):
+        return {'html_id':self.id, 'url':self.url, 'html_file':self.html_io}
+
+    def make_book(self):
+        return {'is_broken_up':False, 'title':self.title, 'words':self.html_io, 'is_gutenberg':True}
 
     def return_author(self):
         return self.author

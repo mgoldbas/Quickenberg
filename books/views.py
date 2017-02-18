@@ -1,13 +1,13 @@
 
 from books.build_book_data import ScrapeGutenberg
-from books.models import Author, Text, InputText, FileText
+from books.models import Author, Text, InputText, FileText, Genre
 #from books.serializers import BookSerializer, AuthorSerializer
-from books.forms import IDForm, InputTextForm, FileTextForm, AuthorForm
-from django.shortcuts import render
-from django.http import Http404, HttpResponseRedirect
+from books.forms import IDForm, InputTextForm, FileTextForm, AuthorForm, GenreForm, GutenbergForm
+
+from django.contrib import messages
 from django.views import View
 from django.views.generic import FormView, ListView, DetailView
-from django.http import HttpResponse
+from django.shortcuts import render
 from itertools import chain
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -71,40 +71,39 @@ def index(request):
     return render(request, 'index.html', ctx)
 
 
-class EnterIDView(View):
+class EnterIDView(FormView):
     """
     view for creating books from ID number
     """
 
     form_class = IDForm
     template_name = 'id_form.html'
-    context = {'form':form_class, 'title':'Enter ID'}
-    def get(self, request):
-        return render(request, self.template_name, self.context)
+    success_url = '/id/'
 
-    def post(self, request):
-        cxt = self.context.copy()
-        form = self.form_class(request.POST)
+    def get_context_data(self, **kwargs):
+        context = super(EnterIDView, self).get_context_data(**kwargs)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
         if form.is_valid():
             html_id = form['html_id']
+            print(html_id)
             scrape = ScrapeGutenberg(html_id.value())
-            data = scrape.return_book_info()
-            book = Text(**data)
+            author, title = scrape.get_title_and_author()
+            author_form = AuthorForm(data={'name':author})
+            if author_form.is_valid():
+                author_form.save()
+            file_text_form = FileTextForm(data=scrape.make_book())
+            if file_text_form.is_valid():
+                file_text_form.save()
+            gutenberg_form = GutenbergForm(data=scrape.make_gutenberg())
+            if gutenberg_form.is_valid():
+                gutenberg_form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
-            book.save()
-            #TODO add author functionality later
-            #a = Author(author=data['author'], book=b)
-
-            if scrape.title:
-                cxt['message'] = 'Successfully Entered ' + scrape.title
-            else:
-                cxt['message'] = 'Successfully Entered book, however no title was found'
-            if scrape.author != 'No Author Found':
-                a = Author(author=scrape.author)
-                a.save()
-            return render(request, self.template_name, cxt)
-        cxt['message'] = 'Failed to insert book'
-        return render(request, self.template_name, cxt)
 
 class EnterInputTextView(FormView):
     """
@@ -123,6 +122,7 @@ class EnterFileTextView(FormView):
     template_name = 'id_form.html'
     success_url = '/books/'
 
+
 class EnterAuthorView(FormView, ListView):
     """
     view for entering author
@@ -137,22 +137,30 @@ class EnterAuthorView(FormView, ListView):
         form.save()
         return super(EnterAuthorView, self).form_valid(form)
 
+    def form_invalid(self, form):
+        response = super(EnterAuthorView, self).form_invalid(self, form)
+        messages.error(response, 'Did not enter valid author')
+        return response
+
+class EnterGenreView(FormView, ListView):
+    """
+    View for creating new genres to associate with book
+    """
+    form_class = GenreForm
+    template_name = 'author.html'
+    success_url = '/genre/'
+    queryset = Genre.objects.all()
+    context_object_name = 'authors'
+
 class TextListView(ListView):
     """
     List input and file text books
     """
-    model = Text
-    template_name = 'list.html'
-    context = {'title':'Available Books', 'toggle_menu':True}
+    template_name = 'book_list.html'
     queryset = list(chain(InputText.objects.all(), FileText.objects.all())) #may require custom model manager
     context_object_name = 'books'
 
-    def get(self, request, *args, **kwargs):
-        request = super(TextListView, self).get(request, *args, **kwargs)
-        print(dir(request))
-        print(request.context_data)
-        request.context_data['books'] = list(chain(InputText.objects.all(), FileText.objects.all()))
-        return request
+
 class InputTextDetailView(DetailView):
     model = InputText
 

@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+{% block body %}
+
+    {% block book_forms %}
+
+        <div>
+            <a href={% url 'book_urls:add_input' %}><button type = "button" class = "btn btn-primary">Enter New Text</button></a>
+            <a href={% url 'book_urls:add_file' %}><button type = "button" class = "btn btn-primary">Enter New File</button></a>
+            <a href={% url 'book_urls:add_id' %}><button type = "button" class = "btn btn-primary">Enter Gutenberg Book</button></a>
+        </div>
+
+    {% endblock %}
+
+    {% block book_list %}
+    <h3> Books</h3>
+    <table>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+    </tr>
+    {% for book in books %}
+        <tr>
+
+        <td> {{ book.title }} </td>
+        <td> {{ book.author }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% endblock %}
+{% endblock %}

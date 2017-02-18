@@ -6,7 +6,8 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 
 
 # Manage Resources
-from books.views import index, EnterFileTextView, EnterInputTextView, EnterIDView, TextListView, EnterAuthorView
+from books.views import index, EnterFileTextView, EnterInputTextView, EnterIDView, TextListView, EnterAuthorView\
+    , EnterGenreView
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.conf.urls import url
 
@@ -17,7 +18,8 @@ urlpatterns = [
     url(r'^id/$', EnterIDView.as_view(), name='add_id'),
     url(r'^file/$', EnterFileTextView.as_view(), name='add_file'),
     url(r'^input/$', EnterInputTextView.as_view(), name='add_input'),
-    url(r'^author/$', EnterAuthorView.as_view(), name='add_author')
+    url(r'^author/$', EnterAuthorView.as_view(), name='add_author'),
+    url(r'^genre/$', EnterGenreView.as_view(), name='add_genre'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

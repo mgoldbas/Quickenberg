@@ -11,11 +11,11 @@
 
             {{ form.as_table }}
         </table>
-        <input type="submit" value="Submit" />
+        <button type = "submit" class = "btn btn-primary">Submit</button>
     </form>
     {% endblock %}
     {% block body_list %}
-        <h3>Authors</h3>
+        <h3>{{ model_name }}</h3>
         <ul>
         {% for author in authors %}
 

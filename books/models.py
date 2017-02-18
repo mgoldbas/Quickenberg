@@ -23,7 +23,7 @@ class Author(models.Model):
 
 class Text(models.Model):
     is_broken_up = models.BooleanField(default=False)
-    regex = models.CharField(max_length=200, null=True)
+    regex = models.CharField(max_length=200, null=True, blank=True)
     title = models.CharField(max_length=200, null=False)
     author = models.ManyToManyField(Author, null=True)
 
@@ -37,6 +37,10 @@ class Text(models.Model):
         if self.regex == None:
             raise ValueError
         self.is_broken_up = True
+
+
+    def __str__(self):
+        return self.title
 
 class FileText(Text):
     """

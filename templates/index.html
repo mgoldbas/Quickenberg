@@ -25,6 +25,7 @@
     <![endif]-->
     <title>{{ title }}</title>
     {%  load static %}
+    <title>{{ title }} </title>
 </head>
 
 <body>
@@ -40,12 +41,7 @@
                 <li>
                     <a href={% url 'book_urls:books' %}>Book List</a>
                 </li>
-                <li>
-                    <a href={% url 'book_urls:add_input' %}>Enter Text</a>
-                </li>
-                <li>
-                    <a href={% url 'book_urls:add_file' %}>Enter File</a>
-                </li>
+
                 <li>
                     <a href={% url 'book_urls:add_id' %}>Enter Gutenberg Book</a>
                 </li>
@@ -53,7 +49,7 @@
                     <a href={% url 'book_urls:add_author' %}>Enter Author</a>
                 </li>
                 <li>
-                    <a href="#">Services</a>
+                    <a href={% url 'book_urls:add_genre' %}>Enter Genre</a>
                 </li>
                 <li>
                     <a href="#">Contact</a>
@@ -70,6 +66,17 @@
                         {% if toggle_menu %}
                         <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
                         <br>
+                        {% endif %}
+                        {% if messages %}
+                        <ul class="messages" >
+                            {% for msg in messages %}
+                            <li>
+                                <div class="alert alert-{{ msg.level_tag }}" role = "alert">
+                                    {{ msg.message }}
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
                         {% endif %}
                         {%  block body %}
                         <h1>{{ title }}</h1>

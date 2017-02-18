@@ -1,14 +1,21 @@
 {% extends 'index.html' %}
 {% block body %}
+    <div>
     <form method="POST">
-    {% if message %}
-    <p>{{ message }}</p>
-        <br>
-    {% endif %}
-     {% csrf_token %}
-    <table>
-    {{ form.as_table }}
-        </table>
-    <input type="submit" value="Submit" />
+        {% if message %}
+        <p>{{ message }}</p>
+            <br>
+        {% endif %}
+         {% csrf_token %}
+        <table>
+        {{ form.as_table }}
+                </table>
+
+
+
+        <div class="btn-group">
+            <button type = "submit" class = "btn btn-primary">Submit</button>
+        </div>
     </form>
+    </div>
 {% endblock %}

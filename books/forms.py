@@ -7,7 +7,7 @@ __license__ = 'This Source Code Form is subject to the terms of the Mozilla Publ
 
 # Manage Resources
 from django import forms
-from books.models import InputText, FileText, Author, Genre, Gutenberg
+from books.models import InputText, FileText, Author, Genre, Gutenberg, GutenbergID
 
 
 
@@ -17,6 +17,16 @@ class IDForm(forms.Form):
     Form that will scrape data from project gutenberg site
     """
     html_id = forms.IntegerField()
+
+
+class ModelIDForm(forms.ModelForm):
+    """
+    form for creating Gutenberg ID
+    """
+    class Meta:
+        model = GutenbergID
+        exclude = ()
+
 
 
 

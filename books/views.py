@@ -1,15 +1,17 @@
 
 from books.build_book_data import ScrapeGutenberg
-from books.models import Author, Text, InputText, FileText, Genre
-#from books.serializers import BookSerializer, AuthorSerializer
-from books.forms import IDForm, InputTextForm, FileTextForm, AuthorForm, GenreForm, GutenbergForm
+from books.models import Author, Text, InputText, FileText, Genre, GutenbergID
+from books.serializers import GutenbergIDSerializer #, BookSerializer, AuthorSerializer
+from books.forms import IDForm, InputTextForm, FileTextForm, AuthorForm, GenreForm, GutenbergForm, ModelIDForm
 
 from django.contrib import messages
+from django.core.files import File
 from django.views import View
 from django.views.generic import FormView, ListView, DetailView
 from django.shortcuts import render
 from itertools import chain
 from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -66,6 +68,24 @@ class APIAuthorList(APIView):
 """
 
 
+class APIGutenbergIDView(ListCreateAPIView):
+    """
+    View for creating books by id via URL
+    """
+    serializer_class = GutenbergIDSerializer
+    queryset = GutenbergID.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        print(help(serializer))
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+
 def index(request):
     ctx = {'title':"Home"}
     return render(request, 'index.html', ctx)
@@ -76,7 +96,7 @@ class EnterIDView(FormView):
     view for creating books from ID number
     """
 
-    form_class = IDForm
+    form_class = ModelIDForm
     template_name = 'id_form.html'
     success_url = '/id/'
 
@@ -84,34 +104,50 @@ class EnterIDView(FormView):
         context = super(EnterIDView, self).get_context_data(**kwargs)
         return context
 
+
+    """
     def post(self, request, *args, **kwargs):
-        """
         Use the request and scrape objects to create a new Author if that Author does not exist already,
         :param request:
         :param args:
         :param kwargs:
         :return:
-        """
         form = self.get_form()
         if form.is_valid():
             html_id = form['html_id']
             scrape = ScrapeGutenberg(html_id.value())
-            author, title = scrape.get_title_and_author()
+            if not scrape.is_valid:
+                for error in scrape.errors:
+                    messages.error(request, error)
+                    return self.form_invalid(form)
+            author = scrape.get_author()
             author_form = AuthorForm(data={'name':author})
+            file_text_data = scrape.make_book()
             if author_form.is_valid():
                 author_form.save()
+                file_text_data['author'] = author_form.data.get('author')
+
             else:
                 messages.error(request, 'Author was not found')
-            file_text_form = FileTextForm(data=scrape.make_book())
+                del file_text_data['author']
+            file_text_data['words'].open()
+            file_text_form = FileTextForm(data=file_text_data)
             if file_text_form.is_valid():
                 file_text_form.save()
+            else:
+                for error in file_text_form.errors:
+                    messages.error(request, error + ' file text')
             gutenberg_form = GutenbergForm(data=scrape.make_gutenberg())
             if gutenberg_form.is_valid():
                 gutenberg_form.save()
+            else:
+                for error in gutenberg_form.errors:
+                    messages.error(request, error + ' gutenberg')
+
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-
+    """
 
 class EnterInputTextView(FormView):
     """

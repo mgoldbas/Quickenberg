@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from io import StringIO
 import re
 from collections import OrderedDict
+from django.core.files import File
 
 def get_book_text(text):
     """
@@ -68,17 +69,31 @@ class GetTextInfo(object):
     """
 
     soup = None
+    _is_valid = False
 
-    def get_info(self):
+    def setup_valid(self):
+        self.errors = []
+        self.is_valid = self._is_valid
+
+
+    def set_invalid(self, error):
+        self.errors.append(error)
+        self.is_valid = False
+
+    def set_valid(self):
+        self.is_valid = True
+
+    def set_info(self):
         """
         master function for getting information from soup
         :return:
         """
-        self.get_txt_link()
-        self.get_title_and_author()
-        self.get_files()
+        self.setup_valid()
+        self.set_txt_link()
+        self.set_author()
+        self.set_files()
 
-    def get_txt_link(self):
+    def set_txt_link(self):
         """
         get the text link
         :return:
@@ -89,8 +104,11 @@ class GetTextInfo(object):
             if link.endswith('.txt') or link.endswith('.txt.utf-8'):
                 self.text_link = link
                 self.text_link = 'http:' + self.text_link
+                self.set_valid()
+        if self.text_link is None:
+            self.set_invalid('No Text Link')
 
-    def get_title_and_author(self):
+    def set_author_and_title(self):
         """
         Go to the html title and get the book title and author
         :return:
@@ -98,32 +116,44 @@ class GetTextInfo(object):
         try:
             contents = self.soup.find_all('title')[0].text
         except IndexError:
-            self.author = "No Author Found"
-            self.title = "No Title Found"
+            self.set_invalid('No Title and Author Found')
             return None, None
         by = contents.find('by')
-        title = contents[:by - 1] #TODO Charlotte Perkins Gilman - Free Ebook, remove "free ebook" from the end
+        title = contents[:by - 1] #TODO seperate get author from set author
         author = contents[by+2:]
         dash = author.find('-')
         if dash > 0:
             author = author[:dash]
         self.title = title
         self.author = author
-        return title, author
 
-    def get_files(self):
+    def get_author(self):
+        return self.author
+
+    def set_files(self):
         """
         get book text and store it as a file-like object
         :return:
         """
 
         request = requests.get(self.text_link)
-        self.book_io = StringIO(request.text)
-        self.html_io = StringIO(self.soup.text)
-        self.book_text = self.book_io.read()
+        print('Length of request.text is ', str(len(request.text)))
+        string_io = StringIO(request.text)
+        print(string_io)
+        print(dir(string_io))
+        self.book_io = File(string_io)
 
+        if self.book_io is None:
+            self.set_invalid('Book Object is None')
+        self.html_io = File(StringIO(self.soup.text))
+        if self.html_io is None:
+            self.set_invalid('HTML object is None')
 
+    def get_book_file(self):
+        return self.book_io
 
+    def get_html_file(self):
+        return self.html_io
 
 class ScrapeGutenberg(GetTextInfo):
     """
@@ -136,7 +166,7 @@ class ScrapeGutenberg(GetTextInfo):
         self.id = id
         self.url = self._url.format(id)
         self.get_soup()
-        self.get_info()
+        self.set_info()
         pass
 
 
@@ -218,9 +248,8 @@ class SplitByRegex(object):
         return self.chapters
 
 if __name__ == "__main__":
-    scrape = ScrapeGutenberg(54177)
-    print(scrape.html_io)
-
+    gid_api = {'g_id':35091}
+    requests.post('localhost:4000', data=gid_api)
 
 
 

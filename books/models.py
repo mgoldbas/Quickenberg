@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -6,6 +7,7 @@ from django.core.files import File
 from bs4 import BeautifulSoup
 import requests
 from io import StringIO
+
 
 from books.build_book_data import SplitByRegex
 
@@ -67,15 +69,39 @@ class GutenbergID(models.Model):
     """
     Initial model for storing funtions around building gutenberg data
     """
-    g_id = models.IntegerField(primary_key=True)
+    gutenberg_id = models.IntegerField(primary_key=True, verbose_name='Gutenberg ID')
 
-    valid = None
+    _valid = None
 
     _url = "https://www.gutenberg.org/ebooks/{}"
 
 
     def __str__(self):
-        return str(self.g_id)
+        return str(self.gutenberg_id)
+
+    @property
+    def get_url(self):
+        return self.url
+
+    @property
+    def get_html_file(self):
+        return self.html_io
+
+    @property
+    def get_book_file(self):
+        return self.book_io
+
+    @property
+    def get_author(self):
+        return self.author
+
+    @property
+    def get_title(self):
+        return self.title
+
+    @property
+    def get_soup(self):
+        return self.soup
 
 
     def save(self, force_insert=False, force_update=False, using=None,
@@ -89,36 +115,50 @@ class GutenbergID(models.Model):
         :return:
         """
         super(GutenbergID, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
-        self.url = self._url.format(self.g_id)
+        self.create_gutenberg()
+
         self.set_info()
+        self.create_gutenberg()
+        #if self.is_valid():
+        #    self.create_gutenberg()
 
     def setup_validity(self):
-        self.valid = True
+        self._valid = True
         self.errors = []
-
-    def set_invalid(self, error):
-        self.errors.append(error)
-        self.valid = False
 
     def is_valid(self):
         return self.valid
+
+    def set_invalid(self, error):
+        """
+        add error to errors list and set validity to false
+        :param error:
+        :return:
+        """
+        self.errors.append(error)
+        self._valid = False
+
+
 
     def set_info(self):
         """
         master function for getting information from soup
         :return:
         """
-        self.setup_valid()
+        self.setup_validity()
+        self.set_url()
+        self.set_soup()
         self.set_txt_link()
-        self.set_author()
+        self.set_author_and_title()
         self.set_files()
+
+
+
 
     def set_soup(self):
         self.request = requests.get(self.url)
         self.soup = BeautifulSoup(self.request.content, 'html.parser')
 
-    def get_soup(self):
-        return self.soup
 
     def set_txt_link(self):
         """
@@ -130,8 +170,8 @@ class GutenbergID(models.Model):
             link = s['href']
             if link.endswith('.txt') or link.endswith('.txt.utf-8'):
                 self.text_link = link
-                self.text_link = 'http:' + self.text_link
-                self.set_valid()
+                if not self.text_link.startswith('http:'):
+                    self.text_link = 'http:' + self.text_link
         if self.text_link is None:
             self.set_invalid('No Text Link')
 
@@ -154,11 +194,7 @@ class GutenbergID(models.Model):
         self.title = title
         self.author = author
 
-    def get_author(self):
-        return self.author
 
-    def get_title(self):
-        return self.title
 
     def set_files(self):
         """
@@ -167,10 +203,7 @@ class GutenbergID(models.Model):
         """
 
         request = requests.get(self.text_link)
-        print('Length of request.text is ', str(len(request.text)))
         string_io = StringIO(request.text)
-        print(string_io)
-        print(dir(string_io))
         self.book_io = File(string_io)
 
         if self.book_io is None:
@@ -179,34 +212,44 @@ class GutenbergID(models.Model):
         if self.html_io is None:
             self.set_invalid('HTML object is None')
 
-    def get_book_file(self):
-        return self.book_io
 
-    @property
-    def get_html_file(self):
-        return self.html_io
+    def set_url(self):
+        self.url = self._url.format(self.gutenberg_id)
 
 
 
-class Gutenberg(Text):
+    def create_gutenberg(self):
+        self.set_info()
+        data = dict(html_id=self, url=self.url, html_file=self.html_io)
+        print('Inputted Data')
+        print(data)
+        from books.forms import GutenbergForm
+        gutenberg = GutenbergForm(data=data)
+        if gutenberg.is_valid():
+            gutenberg.save()
+        else:
+            for e in gutenberg.errors: #TODO fix so set invalid is always using django errors
+                self.set_invalid(e)
+
+
+
+
+class Gutenberg(models.Model):
     """
     Model for storing html file from project gutenberg website
     """
-    parent_text = models.OneToOneField(FileText)
-    html_id = models.OneToOneField(GutenbergID)
+
+    parent_text = models.OneToOneField(FileText, null= True, on_delete=models.CASCADE)
+    html_number = models.OneToOneField(GutenbergID, on_delete=models.CASCADE)
     url = models.URLField(default='http://www.gutenberg.org/cache/epub/1232/pg1232.txt') #the prince is the default
     html_file = models.FileField()
 
-
-    def __str__(self):
-        return self.title
-
     def get_soup(self):
-        return bs4.BeautifulSoup(self.html_file.read())
+        self.html_file.seek(0)
+        return BeautifulSoup(self.html_file.read())
 
 
-    class Meta:
-        ordering = ('title',)
+
 
 
 
@@ -246,5 +289,5 @@ class Genre(models.Model):
 
 
 
-admin.site.register([Text, Author, InputText, FileText, Genre, GutenbergID])
+admin.site.register([Text, Author, InputText, FileText, Genre, GutenbergID, Gutenberg])
 

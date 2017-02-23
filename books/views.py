@@ -104,6 +104,10 @@ class EnterIDView(FormView):
         context = super(EnterIDView, self).get_context_data(**kwargs)
         return context
 
+    def form_valid(self, form):
+        form.save()
+        return super(EnterIDView, self).form_valid(form)
+
 
     """
     def post(self, request, *args, **kwargs):
@@ -182,7 +186,7 @@ class EnterAuthorView(FormView, ListView):
         return super(EnterAuthorView, self).form_valid(form)
 
     def form_invalid(self, form):
-        response = super(EnterAuthorView, self).form_invalid(self, form)
+        response = super(EnterAuthorView, self).form_invalid(form)
         messages.error(response, 'Did not enter valid author')
         return response
 

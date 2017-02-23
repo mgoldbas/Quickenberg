@@ -105,21 +105,9 @@ class GutenbergID(models.Model):
         return self.soup
 
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        """
-        override save method to create Gutenberg Model upon save
-        :param force_insert:
-        :param force_update:
-        :param using:
-        :param update_fields:
-        :return:
-        """
-        super(GutenbergID, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
-        self.set_info()
-        self.create_gutenberg()
-        #if self.is_valid():
-        #    self.create_gutenberg()
+    def set_soup(self):
+        self.html_file.seek(0)
+        self.soup = BeautifulSoup(self.html_file.read())
 
     def setup_validity(self):
         self._valid = True
@@ -152,95 +140,96 @@ class GutenbergID(models.Model):
         self.set_files()
 
 
-
-
-    def set_soup(self):
-        self.request = requests.get(self.url)
-        self.soup = BeautifulSoup(self.request.content, 'html.parser')
-
-
-    def set_txt_link(self):
+    def set_title_tag(self):
         """
-        get the text link
+        Find the title tag in the html file, usually its "Metamorphisis by Franz Kafka"
+        thus seperate at "by"
         :return:
         """
-        self.text_link = None
-        for s in self.soup.find_all('a', href=True):
-            link = s['href']
-            if link.endswith('.txt') or link.endswith('.txt.utf-8'):
-                self.text_link = link
-                if not self.text_link.startswith('http:'):
-                    self.text_link = 'http:' + self.text_link
-        if self.text_link is None:
-            self.set_invalid('No Text Link')
+        try:
+            self.title_tag = self.soup.find_all('title')[0].text
+            self.by_position = self.title_tag.find('by')
+        except IndexError:
+            self.set_invalid('No Title and Author Found')
+            return
+
+
+    @property
+    def get_title(self):
+        return self.title
+
+    def set_title(self):
+        self.title = self.title_tag[:self.by_position - 1]
+
+    @property
+    def get_author(self):
+        return self.author
+
+    def set_author(self):
+        self.author =  self.title_tag[self.by_position+2:]
+        dash = self.author.find('-')
+        if dash > 0:
+            self.author = self.author[:dash]
+
 
     def set_author_and_title(self):
         """
         Go to the html title and get the book title and author
+        must set title tag prior to setting author and title
         :return:
         """
-        try:
-            contents = self.soup.find_all('title')[0].text
-        except IndexError:
-            self.set_invalid('No Title and Author Found')
-            return None, None
-        by = contents.find('by')
-        title = contents[:by - 1] #TODO seperate get author from set author
-        author = contents[by+2:]
-        dash = author.find('-')
-        if dash > 0:
-            author = author[:dash]
-        self.title = title
-        self.author = author
+        self.set_title_tag()
+        self.set_title()
+        self.set_author()
 
 
-
-    def set_files(self):
+    def set_html_io(self):
         """
         get book text and store it as a file-like object
         :return:
         """
-
-        request = requests.get(self.text_link)
-        string_io = StringIO(request.text)
-        string_io.seek(0, 2)
-        self.book_io = InMemoryUploadedFile(string_io, 'text', self.title, None, string_io.tell(), None)
-
-        if self.book_io is None:
-            self.set_invalid('Book Object is None')
         html_string_io = StringIO(self.soup.text)
-        print(html_string_io)
-        print(html_string_io.errors)
         html_string_io.seek(0, 2)
-        self.html_io = InMemoryUploadedFile(html_string_io, 'html_file', self.title + ' html file', None, len(request.text), None)
-        print(self.html_io)
-        if self.html_io is None:
-            print('html io is None')
-            self.set_invalid('HTML object is None')
+        self.html_io = InMemoryUploadedFile(html_string_io, 'html_file', self.title + ' html file', None, html_string_io.tell() , None)
 
+    @property
+    def get_url(self):
+        return self.url
 
     def set_url(self):
         self.url = self._url.format(self.gutenberg_id)
 
-
-
-    def create_gutenberg(self):
+    def create_gutenberg(self): #TODO deprciate and use Form and errors for proper ingestion
         self.set_info()
         data = dict(html_number=self, url=self.url, html_file=self.html_io)
-        print('Inputted Data')
-        print(data)
         from books.forms import GutenbergForm
-        g = Gutenberg(**data)
+        g  = Gutenberg(**data)
         g.save()
         """
         gutenberg = GutenbergForm(data=data)
         if gutenberg.is_valid():
             gutenberg.save()
+            return ['Success']
         else:
-            for e in gutenberg.errors: #TODO fix so set invalid is always using django errors
-                self.set_invalid(e)
+            return gutenberg.errors
         """
 
+        """
+        LEFTOVER FROM set title and author
+                try:
+                    contents = self.soup.find_all('title')[0].text
+                except IndexError:
+                    self.set_invalid('No Title and Author Found')
+                    return
+                by = contents.find('by')
+                title = contents[:by - 1]
+                author = contents[by+2:]
+                dash = author.find('-')
+                if dash > 0:
+                    author = author[:dash]
+                self.title = title
+                self.author = author
+        """
 
 
 class Gutenberg(models.Model):
@@ -253,11 +242,51 @@ class Gutenberg(models.Model):
     url = models.URLField(default='http://www.gutenberg.org/cache/epub/1232/pg1232.txt') #the prince is the default
     html_file = models.FileField()
 
+    @property
     def get_soup(self):
+        return self.soup
+
+    def set_soup(self):
         self.html_file.seek(0)
-        return BeautifulSoup(self.html_file.read())
+        self.soup = BeautifulSoup(self.html_file.read())
+
+    @property
+    def get_book_io(self):
+        return self.book_io
+
+    def set_book_io(self):
+        """
+        set the book_io attribute as in memory file field for html_file
+        :return:
+        """
+        request = requests.get(self.text_link)
+        string_io = StringIO(request.text)
+        string_io.seek(0, 2)
+        self.book_io = InMemoryUploadedFile(string_io, 'text', 'words', None, len(request.text), None)
+
+    @property
+    def get_txt_link(self):
+        return self.get_txt_link
+
+    def set_txt_link(self):
+        """
+        set the text link from beautiful soup attribute
+        :return:
+        """
+        self.text_link = None
+        for s in self.soup.find_all('a', href=True):
+            link = s['href']
+            if link.endswith('.txt') or link.endswith('.txt.utf-8'):
+                self.text_link = link
+                if not self.text_link.startswith('http:'):
+                    self.text_link = 'http:' + self.text_link
+        if self.text_link is None:
+            self.set_invalid('No Text Link')
 
 
+    def create_file_text(self):
+        data = {'is_gutenberg':True, }
+        f = FileText(**data)
 
 
 

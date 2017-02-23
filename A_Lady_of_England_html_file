@@ -1,0 +1,472 @@
+
+
+
+
+.icon   { background: transparent url(/pics/sprite.png?1486644314) 0 0 no-repeat; }
+
+
+//<![CDATA[
+var json_search     = "/ebooks/suggest/";
+var mobile_url      = "//m.gutenberg.org/ebooks/54218.mobile";
+var canonical_url   = "http://www.gutenberg.org/ebooks/54218";
+var lang            = "en_US";
+var fb_lang         = "en_US"; /* FB accepts only xx_XX */
+var msg_load_more   = "Load More Results…";
+var page_mode       = "screen";
+var dialog_title    = "";
+var dialog_message  = "";
+//]]>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A Lady of England by Agnes Giberne - Free Ebook
+
+
+.qrcode { background: transparent url(//www.gutenberg.org/cache/epub/54218/pg54218.qrcode.png) 0 0 no-repeat; }
+
+
+
+
+
+
+
+
+
+
+Project Gutenberg
+
+
+
+54,151 free ebooks
+
+
+
+
+A Lady of England by Agnes Giberne
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Download
+Bibrec
+
+
+
+Bibliographic Record 
+
+
+
+
+
+
+
+
+Author
+
+Giberne, Agnes
+
+
+Title
+
+A Lady of EnglandThe Life and Letters of Charlotte Maria Tucker
+
+
+
+Language
+English
+
+
+Category
+Text
+
+
+EBook-No.
+54218
+
+
+Release Date
+Feb 21, 2017
+
+
+Copyright Status
+Public domain in the USA.
+
+
+Downloads
+89 downloads in the last 30 days.
+
+
+Price
+$0.00
+
+
+
+
+Similar Books
+
+
+
+
+
+
+Readers also downloaded…
+
+
+
+
+ 
+
+
+
+Download This eBook
+
+
+
+
+
+
+
+
+
+
+
+Format 
+
+
+Url
+Size
+
+
+
+
+
+
+
+
+
+
+
+
+Read this book online: HTML
+//www.gutenberg.org/files/54218/54218-h/54218-h.htm
+1.2 MB
+
+
+
+
+
+
+
+
+
+EPUB (with images)
+//www.gutenberg.org/ebooks/54218.epub.images?session_id=013cd3ff6ce323c570e232ed5827d5f60634dd54
+874 kB
+
+
+
+
+
+
+
+
+
+
+
+EPUB (no images)
+//www.gutenberg.org/ebooks/54218.epub.noimages?session_id=013cd3ff6ce323c570e232ed5827d5f60634dd54
+558 kB
+
+
+
+
+
+
+
+
+
+
+
+Kindle (with images)
+//www.gutenberg.org/ebooks/54218.kindle.images?session_id=013cd3ff6ce323c570e232ed5827d5f60634dd54
+2.8 MB
+
+
+
+
+
+
+
+
+
+
+
+Kindle (no images)
+//www.gutenberg.org/ebooks/54218.kindle.noimages?session_id=013cd3ff6ce323c570e232ed5827d5f60634dd54
+2.2 MB
+
+
+
+
+
+
+
+
+
+
+
+Plain Text UTF-8
+//www.gutenberg.org/files/54218/54218-0.txt
+1.1 MB
+
+
+
+
+
+
+
+
+
+More Files…
+http://www.gutenberg.org/files/54218/
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+http://www.gutenberg.org/ebooks/54218Project Gutenberg offers 54,151 free ebooks to download.
+
+
+
+
+
+
+
+
+
+
+
+
+Project Gutenberg offers 54,151 free ebooks to download.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Search
+Latest
+Terms of Use
+Donate?
+Mobile
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Help
+
+
+
+
+
+
+
+
+
+Enter your search terms separated by spaces,
+then press <Enter>.
+Avoid punctuation except as indicated below:
+
+
+Suffixes
+.
+exact match
+
+
+Prefixes
+a.
+author
+
+
+t.
+title
+
+
+s.
+subject
+
+
+l.
+language
+
+
+#
+ebook no.
+
+
+n.
+ebook no.
+
+
+cat.
+category
+
+
+
+Operators
+Always put spaces around these.
+
+|
+or
+
+
+!
+not
+
+
+( )
+grouping
+
+
+
+
+this query
+finds
+
+
+shakespeare hamlet
+"Hamlet" by Shakespeare
+
+
+qui.
+"qui", not "Quixote"
+
+
+love stories
+love stories
+
+
+a.shakespeare
+by Shakespeare
+
+
+s.shakespeare
+about Shakespeare
+
+
+#74
+ebook no. 74
+
+
+juvenile l.german
+juvenile lit in German
+
+
+verne ( l.fr | l.it )
+by Verne in French or Italian
+
+
+love stories ! austen
+love stories not by Austen
+
+
+jane austen cat.audio
+audio books by Jane Austen
+
+
+
+
+
+

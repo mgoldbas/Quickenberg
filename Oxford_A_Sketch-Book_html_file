@@ -1,0 +1,476 @@
+
+
+
+
+.icon   { background: transparent url(/pics/sprite.png?1486644314) 0 0 no-repeat; }
+
+
+//<![CDATA[
+var json_search     = "/ebooks/suggest/";
+var mobile_url      = "//m.gutenberg.org/ebooks/54220.mobile";
+var canonical_url   = "http://www.gutenberg.org/ebooks/54220";
+var lang            = "en_US";
+var fb_lang         = "en_US"; /* FB accepts only xx_XX */
+var msg_load_more   = "Load More Results…";
+var page_mode       = "screen";
+var dialog_title    = "";
+var dialog_message  = "";
+//]]>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Oxford; A Sketch-Book by Fred Richards - Free Ebook
+
+
+.qrcode { background: transparent url(//www.gutenberg.org/cache/epub/54220/pg54220.qrcode.png) 0 0 no-repeat; }
+
+
+
+
+
+
+
+
+
+
+Project Gutenberg
+
+
+
+54,151 free ebooks
+
+
+
+4 by Fred Richards
+
+
+
+
+Oxford; A Sketch-Book by Fred Richards
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Download
+Bibrec
+
+
+
+Bibliographic Record 
+
+
+
+
+
+
+
+
+Author
+
+Richards, Fred, 1878-1932
+
+
+Title
+
+Oxford; A Sketch-Book
+
+
+
+Language
+English
+
+
+Category
+Text
+
+
+EBook-No.
+54220
+
+
+Release Date
+Feb 22, 2017
+
+
+Copyright Status
+Public domain in the USA.
+
+
+Downloads
+0 downloads in the last 30 days.
+
+
+Price
+$0.00
+
+
+
+
+Similar Books
+
+
+
+
+
+
+Readers also downloaded…
+
+
+
+
+ 
+
+
+
+Download This eBook
+
+
+
+
+
+
+
+
+
+
+
+Format 
+
+
+Url
+Size
+
+
+
+
+
+
+
+
+
+
+
+
+Read this book online: HTML
+//www.gutenberg.org/files/54220/54220-h/54220-h.htm
+33 kB
+
+
+
+
+
+
+
+
+
+EPUB (with images)
+//www.gutenberg.org/ebooks/54220.epub.images?session_id=f87a476a827961321021e19ff57f8389e92eaa52
+1.0 MB
+
+
+
+
+
+
+
+
+
+
+
+EPUB (no images)
+//www.gutenberg.org/ebooks/54220.epub.noimages?session_id=f87a476a827961321021e19ff57f8389e92eaa52
+87 kB
+
+
+
+
+
+
+
+
+
+
+
+Kindle (with images)
+//www.gutenberg.org/ebooks/54220.kindle.images?session_id=f87a476a827961321021e19ff57f8389e92eaa52
+1.5 MB
+
+
+
+
+
+
+
+
+
+
+
+Kindle (no images)
+//www.gutenberg.org/ebooks/54220.kindle.noimages?session_id=f87a476a827961321021e19ff57f8389e92eaa52
+179 kB
+
+
+
+
+
+
+
+
+
+
+
+Plain Text UTF-8
+//www.gutenberg.org/files/54220/54220-0.txt
+21 kB
+
+
+
+
+
+
+
+
+
+More Files…
+http://www.gutenberg.org/files/54220/
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+http://www.gutenberg.org/ebooks/54220Project Gutenberg offers 54,151 free ebooks to download.
+
+
+
+
+
+
+
+
+
+
+
+
+Project Gutenberg offers 54,151 free ebooks to download.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Search
+Latest
+Terms of Use
+Donate?
+Mobile
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Help
+
+
+
+
+
+
+
+
+
+Enter your search terms separated by spaces,
+then press <Enter>.
+Avoid punctuation except as indicated below:
+
+
+Suffixes
+.
+exact match
+
+
+Prefixes
+a.
+author
+
+
+t.
+title
+
+
+s.
+subject
+
+
+l.
+language
+
+
+#
+ebook no.
+
+
+n.
+ebook no.
+
+
+cat.
+category
+
+
+
+Operators
+Always put spaces around these.
+
+|
+or
+
+
+!
+not
+
+
+( )
+grouping
+
+
+
+
+this query
+finds
+
+
+shakespeare hamlet
+"Hamlet" by Shakespeare
+
+
+qui.
+"qui", not "Quixote"
+
+
+love stories
+love stories
+
+
+a.shakespeare
+by Shakespeare
+
+
+s.shakespeare
+about Shakespeare
+
+
+#74
+ebook no. 74
+
+
+juvenile l.german
+juvenile lit in German
+
+
+verne ( l.fr | l.it )
+by Verne in French or Italian
+
+
+love stories ! austen
+love stories not by Austen
+
+
+jane austen cat.audio
+audio books by Jane Austen
+
+
+
+
+
+

@@ -96,7 +96,7 @@ class EnterIDView(FormView):
     view for creating books from ID number
     """
 
-    form_class = ModelIDForm
+    form_class = IDForm
     template_name = 'id_form.html'
     success_url = '/id/'
 
@@ -104,22 +104,28 @@ class EnterIDView(FormView):
         context = super(EnterIDView, self).get_context_data(**kwargs)
         return context
 
-    def form_valid(self, form):
-        form.save()
-        return super(EnterIDView, self).form_valid(form)
 
 
-    """
     def post(self, request, *args, **kwargs):
-        Use the request and scrape objects to create a new Author if that Author does not exist already,
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
         form = self.get_form()
         if form.is_valid():
-            html_id = form['html_id']
-            scrape = ScrapeGutenberg(html_id.value())
+            html_id = form['html_id'].value
+            print(str(html_id))
+            gutenberg_id = GutenbergID(**{'gutenberg_id':html_id})
+            #gutenberg_id.save()
+            #gutenberg_id.set_info()
+            result = gutenberg_id.create_gutenberg()
+            if result == 'Success':
+                messages.info(request, 'Gutenberg ID ' + str(html_id) + " was uploaded successfully")
+            else:
+                for error in result:
+                    messages.error(request, error)
+            return self.form_valid(form)
+        return self.form_invalid(form)
+
+
+
+"""
             if not scrape.is_valid:
                 for error in scrape.errors:
                     messages.error(request, error)
@@ -151,7 +157,7 @@ class EnterIDView(FormView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-    """
+"""
 
 class EnterInputTextView(FormView):
     """

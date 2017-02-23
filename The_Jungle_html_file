@@ -1,0 +1,566 @@
+
+
+
+
+.icon   { background: transparent url(/pics/sprite.png?1486644314) 0 0 no-repeat; }
+
+
+//<![CDATA[
+var json_search     = "/ebooks/suggest/";
+var mobile_url      = "//m.gutenberg.org/ebooks/140.mobile";
+var canonical_url   = "http://www.gutenberg.org/ebooks/140";
+var lang            = "en_US";
+var fb_lang         = "en_US"; /* FB accepts only xx_XX */
+var msg_load_more   = "Load More Results…";
+var page_mode       = "screen";
+var dialog_title    = "";
+var dialog_message  = "";
+//]]>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The Jungle by Upton Sinclair - Free Ebook
+
+
+.qrcode { background: transparent url(//www.gutenberg.org/cache/epub/140/pg140.qrcode.png) 0 0 no-repeat; }
+
+
+
+
+
+
+
+
+
+
+Project Gutenberg
+
+
+
+54,151 free ebooks
+
+
+
+31 by Upton Sinclair
+
+
+
+
+The Jungle by Upton Sinclair
+
+
+
+
+
+
+
+No cover available
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Download
+Bibrec
+
+
+
+Bibliographic Record 
+
+
+
+
+
+
+
+
+Author
+
+Sinclair, Upton, 1878-1968
+
+
+Title
+
+The Jungle
+
+
+
+Language
+English
+
+
+LoC Class
+
+PS: Language and Literatures: American and Canadian literature
+
+
+
+Subject
+
+
+Meat industry and trade -- Fiction
+
+
+
+Subject
+
+
+Working class -- Fiction
+
+
+
+Subject
+
+
+Political fiction
+
+
+
+Subject
+
+
+Lithuanian Americans -- Fiction
+
+
+
+Subject
+
+
+Stockyards -- Fiction
+
+
+
+Subject
+
+
+Immigrants -- Fiction
+
+
+
+Subject
+
+
+Chicago (Ill.) -- Fiction
+
+
+
+
+Category
+Text
+
+
+EBook-No.
+140
+
+
+Release Date
+Mar 11, 2006
+
+
+Copyright Status
+Public domain in the USA.
+
+
+Downloads
+4390 downloads in the last 30 days.
+
+
+Price
+$0.00
+
+
+
+
+Similar Books
+
+
+
+
+
+
+Readers also downloaded…
+
+
+
+
+
+
+
+
+
+
+In Contemporary Reviews
+
+
+
+
+
+
+
+
+
+
+In Bestsellers, American, 1895-1923
+
+
+
+
+
+
+
+
+
+
+In Banned Books from Anne Haight's list
+
+
+
+
+ 
+
+
+
+Download This eBook
+
+
+
+
+
+
+
+
+
+
+
+Format 
+
+
+Url
+Size
+
+
+
+
+
+
+
+
+
+
+
+
+Read this book online: HTML
+//www.gutenberg.org/files/140/140-h/140-h.htm
+963 kB
+
+
+
+
+
+
+
+
+
+EPUB (with images)
+//www.gutenberg.org/ebooks/140.epub.images?session_id=ffcbf4f4cf075f46e3d2eadebc5ca8fdf0ee346c
+333 kB
+
+
+
+
+
+
+
+
+
+
+
+EPUB (no images)
+//www.gutenberg.org/ebooks/140.epub.noimages?session_id=ffcbf4f4cf075f46e3d2eadebc5ca8fdf0ee346c
+333 kB
+
+
+
+
+
+
+
+
+
+
+
+Kindle (with images)
+//www.gutenberg.org/ebooks/140.kindle.images?session_id=ffcbf4f4cf075f46e3d2eadebc5ca8fdf0ee346c
+1.3 MB
+
+
+
+
+
+
+
+
+
+
+
+Kindle (no images)
+//www.gutenberg.org/ebooks/140.kindle.noimages?session_id=ffcbf4f4cf075f46e3d2eadebc5ca8fdf0ee346c
+1.3 MB
+
+
+
+
+
+
+
+
+
+
+
+Plain Text UTF-8
+//www.gutenberg.org/files/140/140-0.txt
+832 kB
+
+
+
+
+
+
+
+
+
+More Files…
+http://www.gutenberg.org/files/140/
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+http://www.gutenberg.org/ebooks/140Project Gutenberg offers 54,151 free ebooks to download.
+
+
+
+
+
+
+
+
+
+
+
+
+Project Gutenberg offers 54,151 free ebooks to download.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Search
+Latest
+Terms of Use
+Donate?
+Mobile
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Help
+
+
+
+
+
+
+
+
+
+Enter your search terms separated by spaces,
+then press <Enter>.
+Avoid punctuation except as indicated below:
+
+
+Suffixes
+.
+exact match
+
+
+Prefixes
+a.
+author
+
+
+t.
+title
+
+
+s.
+subject
+
+
+l.
+language
+
+
+#
+ebook no.
+
+
+n.
+ebook no.
+
+
+cat.
+category
+
+
+
+Operators
+Always put spaces around these.
+
+|
+or
+
+
+!
+not
+
+
+( )
+grouping
+
+
+
+
+this query
+finds
+
+
+shakespeare hamlet
+"Hamlet" by Shakespeare
+
+
+qui.
+"qui", not "Quixote"
+
+
+love stories
+love stories
+
+
+a.shakespeare
+by Shakespeare
+
+
+s.shakespeare
+about Shakespeare
+
+
+#74
+ebook no. 74
+
+
+juvenile l.german
+juvenile lit in German
+
+
+verne ( l.fr | l.it )
+by Verne in French or Italian
+
+
+love stories ! austen
+love stories not by Austen
+
+
+jane austen cat.audio
+audio books by Jane Austen
+
+
+
+
+
+

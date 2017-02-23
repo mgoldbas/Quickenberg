@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib import admin
 from django.core.files import File
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from bs4 import BeautifulSoup
 import requests
 from io import StringIO
@@ -115,8 +116,6 @@ class GutenbergID(models.Model):
         :return:
         """
         super(GutenbergID, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
-        self.create_gutenberg()
-
         self.set_info()
         self.create_gutenberg()
         #if self.is_valid():
@@ -204,12 +203,19 @@ class GutenbergID(models.Model):
 
         request = requests.get(self.text_link)
         string_io = StringIO(request.text)
-        self.book_io = File(string_io)
+        string_io.seek(0, 2)
+        self.book_io = InMemoryUploadedFile(string_io, 'text', self.title, None, string_io.tell(), None)
 
         if self.book_io is None:
             self.set_invalid('Book Object is None')
-        self.html_io = File(StringIO(self.soup.text))
+        html_string_io = StringIO(self.soup.text)
+        print(html_string_io)
+        print(html_string_io.errors)
+        html_string_io.seek(0, 2)
+        self.html_io = InMemoryUploadedFile(html_string_io, 'html_file', self.title + ' html file', None, len(request.text), None)
+        print(self.html_io)
         if self.html_io is None:
+            print('html io is None')
             self.set_invalid('HTML object is None')
 
 
@@ -220,23 +226,26 @@ class GutenbergID(models.Model):
 
     def create_gutenberg(self):
         self.set_info()
-        data = dict(html_id=self, url=self.url, html_file=self.html_io)
+        data = dict(html_number=self, url=self.url, html_file=self.html_io)
         print('Inputted Data')
         print(data)
         from books.forms import GutenbergForm
+        g = Gutenberg(**data)
+        g.save()
+        """
         gutenberg = GutenbergForm(data=data)
         if gutenberg.is_valid():
             gutenberg.save()
         else:
             for e in gutenberg.errors: #TODO fix so set invalid is always using django errors
                 self.set_invalid(e)
-
+        """
 
 
 
 class Gutenberg(models.Model):
     """
-    Model for storing html file from project gutenberg website
+    Model for storing html file from project gutenberg e
     """
 
     parent_text = models.OneToOneField(FileText, null= True, on_delete=models.CASCADE)

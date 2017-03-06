@@ -107,19 +107,26 @@ class EnterIDView(FormView):
 
 
     def post(self, request, *args, **kwargs):
+        """
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         form = self.get_form()
         if form.is_valid():
             html_id = form['html_id'].value
             print(str(html_id))
             gutenberg_id = GutenbergID(**{'gutenberg_id':html_id})
-            #gutenberg_id.save()
-            #gutenberg_id.set_info()
+            gutenberg_id.save()
             result = gutenberg_id.create_gutenberg()
             if result == 'Success':
                 messages.info(request, 'Gutenberg ID ' + str(html_id) + " was uploaded successfully")
             else:
                 for error in result:
                     messages.error(request, error)
+            author = gutenberg_id.create_author()
             return self.form_valid(form)
         return self.form_invalid(form)
 

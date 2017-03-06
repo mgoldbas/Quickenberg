@@ -205,16 +205,22 @@ class GutenbergID(models.Model):
         from books.forms import GutenbergForm
         g  = Gutenberg(**data)
         g.save()
-        """
+
+
         gutenberg = GutenbergForm(data=data)
         if gutenberg.is_valid():
             gutenberg.save()
-            return ['Success']
+            return 'Success'
         else:
             return gutenberg.errors
-        """
 
-        """
+    def create_author(self):
+        from books.forms import AuthorForm
+        a = AuthorForm(**{'name':self.author})
+
+
+
+"""
         LEFTOVER FROM set title and author
                 try:
                     contents = self.soup.find_all('title')[0].text
